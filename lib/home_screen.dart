@@ -9,6 +9,8 @@ class HomeScreen extends StatefulWidget {
   _HomeScreenState createState() => _HomeScreenState();
 }
 
+// LINK: https://medium.com/flutterdevs/example-animations-in-flutter-2-1034a52f795b
+
 class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   Animation _arrowAnimation, _heartAnimation;
   AnimationController _arrowAnimationController, _heartAnimationController;
@@ -16,16 +18,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    //Controlleren bliver sat til at være 300 millisekunder om at køre animationen
     _arrowAnimationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    
+    //Starter vandret og rotere 180 grader
     _arrowAnimation =
         Tween(begin: 0.0, end: pi).animate(_arrowAnimationController);
 
+
+// Sætter hjerte animationen
+// starter ved 150 og bouncer ud til 170
     _heartAnimationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 1200));
     _heartAnimation = Tween(begin: 150.0, end: 170.0).animate(CurvedAnimation(
         curve: Curves.bounceOut, parent: _heartAnimationController));
 
+// Når animatioen er færdig gentager denne det
     _heartAnimationController.addStatusListener((AnimationStatus status) {
       if (status == AnimationStatus.completed) {
         _heartAnimationController.repeat();
@@ -33,6 +42,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     });
   }
 
+// Oprydning efter controlleren så det ikke giver memory leaks
   @override
   void dispose() {
     super.dispose();
@@ -49,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          // Tilføjer rowes der indeholder de to animationer
           firstChild(),
           SizedBox(
             height: 50.0,
@@ -77,8 +88,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
+        // Animated builder er en mere effektiv måde at kalde animationer fremfor setstate()
         AnimatedBuilder(
           animation: _arrowAnimationController,
+          // Pakker arrow ikonet ind i en Transform widget, så den akn roterer omkirng dennes centrum
           builder: (context, child) => Transform.rotate(
                 angle: _arrowAnimation.value,
                 child: Icon(
@@ -95,6 +108,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           padding: const EdgeInsets.all(12.0),
           child: Text('Start Icon Animation'),
           onPressed: () {
+            // Rotere pilen frem og tilbage
             _arrowAnimationController.isCompleted
                 ? _arrowAnimationController.reverse()
                 : _arrowAnimationController.forward();

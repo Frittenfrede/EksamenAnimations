@@ -18,16 +18,18 @@ class _AnimatedScreenState extends State<AnimatedScreen>
     _containerAnimationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 5000));
 
+  // Denne animation gør så den starter som en cirkel og slutter som firkant
     _containerRadiusAnimation = BorderRadiusTween(
             begin: BorderRadius.circular(100.0),
-            end: BorderRadius.circular(0.0))
+            end: BorderRadius.circular(0))
         .animate(CurvedAnimation(
             curve: Curves.ease, parent: _containerAnimationController));
-
-    _containerSizeAnimation = Tween(begin: 0.0, end: 2.0).animate(
+// Ændre størrelsen på helel animationen
+    _containerSizeAnimation = Tween(begin: 0.0, end: 2).animate(
         CurvedAnimation(
             curve: Curves.ease, parent: _containerAnimationController));
 
+// Ændre farven fra sort til hvid
     _containerColorAnimation =
         ColorTween(begin: Colors.black, end: Colors.white).animate(
             CurvedAnimation(
@@ -36,6 +38,7 @@ class _AnimatedScreenState extends State<AnimatedScreen>
     _containerAnimationController.forward();
   }
 
+// Rydder op
   @override
   void dispose() {
     super.dispose();
@@ -54,6 +57,8 @@ class _AnimatedScreenState extends State<AnimatedScreen>
         child: AnimatedBuilder(
           animation: _containerAnimationController,
           builder: (context, index) {
+            // Starter på x = 0.0 og til slut er x = 2 * bredden på skærmen
+            // y og z er 0 og 0, så x rykker horisontalt på skærmen
             return Container(
               transform: Matrix4.translationValues(
                   _containerSizeAnimation.value * width - 200.0, 0.0, 0.0),
